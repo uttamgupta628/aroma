@@ -1,0 +1,23 @@
+{
+  "name": "aroma-catalogue",
+  "version": "1.0.0",
+  "description": "Multi-merchant catalogue with CSV import",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test \"test/*.test.js\"",
+    "sample-csv": "node scripts/generate-sample-csv.js",
+    "demo:blocked": "node scripts/demo-blocked-edit.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.2.0",
+    "csv-parse": "^7.0.3",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.5.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
