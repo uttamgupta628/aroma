@@ -61,7 +61,8 @@ function createApp({ db, jwtSecret }) {
     const where = q
       ? `merchant_id = @m AND (sku LIKE @like ESCAPE '\\' OR name LIKE @like ESCAPE '\\')`
       : 'merchant_id = @m';
-    const params = { m: req.merchantId, like };
+    // node:sqlite rejects unused named parameters, so only pass :like when it is used
+    const params = q ? { m: req.merchantId, like } : { m: req.merchantId };
 
     const total = db.prepare(`SELECT COUNT(*) AS n FROM products WHERE ${where}`).get(params).n;
     const items = db

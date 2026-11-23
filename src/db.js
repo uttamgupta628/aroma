@@ -1,4 +1,4 @@
-const Database = require('better-sqlite3');
+const { DatabaseSync } = require('node:sqlite'); // built into Node 22.13+, nothing native to compile
 const bcrypt = require('bcryptjs');
 
 const SCHEMA = `
@@ -27,11 +27,23 @@ CREATE INDEX IF NOT EXISTS idx_products_merchant_name ON products (merchant_id, 
 `;
 
 function openDb(file = ':memory:') {
-  const db = new Database(file);
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
+  const db = new DatabaseSync(file);
+  db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
   db.exec(SCHEMA);
   return db;
+}
+
+// All-or-nothing wrapper (node:sqlite has no built-in transaction helper).
+function inTransaction(db, fn) {
+  db.exec('BEGIN');
+  try {
+    const result = fn();
+    db.exec('COMMIT');
+    return result;
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
 }
 
 const DEMO_MERCHANTS = [
@@ -49,4 +61,4 @@ function seedDemoMerchants(db) {
   }
 }
 
-module.exports = { openDb, seedDemoMerchants, DEMO_MERCHANTS };
+module.exports = { openDb, inTransaction, seedDemoMerchants, DEMO_MERCHANTS };

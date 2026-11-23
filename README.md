@@ -2,7 +2,7 @@
 
 A small multi-merchant catalogue app: two merchants sign in, bulk-import products from CSV, and search / paginate / edit **only their own** products.
 
-**Stack:** Node.js 22 + Express, SQLite (`better-sqlite3`), JWT auth, plain HTML/JS front end served by the same Express app. No build step.
+**Stack:** Node.js 22 + Express, SQLite (Node's built-in `node:sqlite`, nothing native to compile), JWT auth, plain HTML/JS front end served by the same Express app. No build step.
 
 ## Setup
 
@@ -12,7 +12,7 @@ npm start            # http://localhost:3000 (creates data/aroma.db and seeds th
 npm test             # automated tests
 ```
 
-Requires Node 22+. Optional env vars: `PORT` (default 3000), `DB_PATH`, `JWT_SECRET` (required when `NODE_ENV=production`).
+Requires Node 22.13+ (you may see an "ExperimentalWarning: SQLite" line on startup; it is harmless). Optional env vars: `PORT` (default 3000), `DB_PATH`, `JWT_SECRET` (required when `NODE_ENV=production`).
 
 ## Demo credentials
 

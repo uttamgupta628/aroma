@@ -1,5 +1,6 @@
 const { parse } = require('csv-parse/sync');
 const { validateProductRow } = require('./validation');
+const { inTransaction } = require('./db');
 
 const REQUIRED_COLUMNS = ['sku', 'name', 'category', 'price', 'stock'];
 
@@ -55,7 +56,7 @@ function importCatalogue(db, merchantId, buffer) {
     summary.rejections.push({ row, sku: sku || '', reason });
   };
 
-  const run = db.transaction(() => {
+  inTransaction(db, () => {
     const existing = new Set(
       db.prepare('SELECT sku FROM products WHERE merchant_id = ?').all(merchantId).map((r) => r.sku)
     );
@@ -84,7 +85,6 @@ function importCatalogue(db, merchantId, buffer) {
       }
     });
   });
-  run();
 
   summary.totalRows = records.length;
   return summary;
